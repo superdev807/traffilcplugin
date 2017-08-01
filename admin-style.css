@@ -1,0 +1,7 @@
+tr.table-gap td {
+    padding-top: 10px;
+}
+
+table.promotes td input[type='text'] {
+    width: 100%;
+}
