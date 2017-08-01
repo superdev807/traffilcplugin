@@ -74,15 +74,16 @@ function trfFollow($post_id) {
 		'consumer_secret'			=> $secret
 	);
 
-	var_dump($settings);
+	// echo "settings... \n";
+	// var_dump($settings);
 
 	$list_id = trfGetList($settings, $userid);
 	$recentTweets = trfGetRecentTweets($settings, $keyword1, $keyword2, $keyword3);
 
 	foreach($recentTweets as $tweet) {
-		$id 		= $tweet[$i]['user']['id'];
-		$tweetid	= $tweet[$i]['id_str'];
-		$name		= $tweet[$i]['user']['screen_name'];
+		$id 		= $tweet['user']['id'];
+		$tweetid	= $tweet['id_str'];
+		$name		= $tweet['user']['screen_name'];
 
 		if (!trfCheckIfFollow($settings, $userid, $id)) {
 			$url = 'https://api.twitter.com/1.1/favorites/create.json';
@@ -96,8 +97,10 @@ function trfFollow($post_id) {
 							->setPostfields($postfields)
 							->performRequest();
 
-			echo "creating favorites... \n";
-			var_dump($res);
+			$res = json_decode($res, true);
+			if ($res['errors']) {
+				echo $res['errors'][0]['message'] . "\n";
+			}
 
 			if (!empty($list_id)) {
 				$url = 'https://api.twitter.com/1.1/lists/members/create.json';
@@ -113,8 +116,10 @@ function trfFollow($post_id) {
 								->setPostfields($postfields)
 								->performRequest();
 
-				echo "creating member... \n";
-				var_dump($res);
+				$res = json_decode($res, true);
+				if ($res['errors']) {
+					echo $res['errors'][0]['message'] . "\n";
+				}
 			}
 
 			$url = 'https://api.twitter.com/1.1/friendships/create.json';
@@ -128,8 +133,11 @@ function trfFollow($post_id) {
 			$res = $twitter->buildOauth($url, $requestMethod)
 							->setPostfields($postfields)
 							->performRequest();
-			echo "creating friendship... \n";
-			var_dump($res);
+
+			$res = json_decode($res, true);
+			if ($res['errors']) {
+				echo $res['errors'][0]['message'] . "\n";
+			}
 		} else {
 			echo "skipping because it's already followed";
 		}
@@ -154,8 +162,8 @@ function trfGetList($settings, $userid) {
 	$name = $response[0]['name'];
 	$id = $response[0]['id'];
 
-	echo "Get List... \n";
-	var_dump($id);
+	// echo "Get List... \n";
+	// var_dump($response);
 	return $id;
 }
 
@@ -209,9 +217,9 @@ function trfGetRecentTweets($settings, $keyword1, $keyword2, $keyword3) {
 	$response3 = json_decode($response3, TRUE);
 
 	$response = array_merge($response1['statuses'], $response2['statuses'], $response3['statuses']);
-	$response = array_slice($response, 0, mt_rand(2, 3));
+	$response = array_slice($response, 0, mt_rand(5, 10));
 
-	echo "getting recent tweets...";
-	var_dump($response);
+	// echo "getting recent tweets...";
+	// var_dump($response);
 	return $response;
 }
