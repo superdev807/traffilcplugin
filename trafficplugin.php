@@ -173,7 +173,8 @@ function wptrfMySubreddits() {
 }
 
 function createRedditPost($post_id) {
-  $title  = get_the_title($post_id);
+  $title = get_post_meta($post_id, "trf_reddit_title", true);
+  if ( empty($title) ) $title  = get_the_title($post_id);
   $link   = get_permalink($post_id);
 
   $clientId = get_post_meta(111111113, 'trfRdID', TRUE);
@@ -283,7 +284,7 @@ function save_or_update_meta($post_id, $post_key, $meta_key) {
 }
 
 function createFacebookPost($post_id) {
-  $title = get_post_meta($postId, "trf_facebook_title", true);
+  $title = get_post_meta($post_id, "trf_facebook_title", true);
   if ( empty($title) ) $title  = get_the_title($post_id);
 
   $link   = get_permalink($post_id);
@@ -297,7 +298,7 @@ function createFacebookPost($post_id) {
 }
 
 function createTweet($post_id, $keyword1, $keyword2, $keyword3) {
-  $title = get_post_meta($postId, "trf_twitter_title", true);
+  $title = get_post_meta($post_id, "trf_twitter_title", true);
   if ( empty($title) ) $title  = get_the_title($post_id);
 
   $link   = get_permalink($post_id);
@@ -479,12 +480,25 @@ function trf_facebook_preview() {
 function trf_twitter_preview() {
   include( "trf_twitter_preview.php" );
 }
+function trf_reddit_preview() {
+  include( "trf_reddit_preview.php" );
+}
 
 function trf_preview( $post_type ) {
   if ( in_array( $post_type, array( 'post', 'page', 'product' ) ) ) {
     global $post;
 
-    if (($post->post_type == 'post' ||  $post->post_type == 'page' ||  $post->post_type == 'product') && $post->post_status == 'publish') {
+    if (($post->post_type == 'post' ||
+      $post->post_type == 'page' ||
+      $post->post_type == 'product') && $post->post_status == 'publish') {
+      add_meta_box(
+        'reddit_preview_meta',
+        'TrafficPlugin - Reddit Preview',
+        'trf_reddit_preview',
+        $post_type,
+        'advanced', // change to something other then normal, advanced or side
+        'high'
+      );
       add_meta_box(
         'twitter_preview_meta',
         'TrafficPlugin - Twitter Preview',
@@ -509,8 +523,10 @@ function trf_add_preview() {
   global $post, $wp_meta_boxes;
   do_meta_boxes( get_current_screen(), 'facebook-preview', $post );
   do_meta_boxes( get_current_screen(), 'twitter-preview', $post );
+  do_meta_boxes( get_current_screen(), 'reddit-preview', $post );
   unset($wp_meta_boxes['post']['facebook-preview']);
   unset($wp_meta_boxes['post']['twitter-preview']);
+  unset($wp_meta_boxes['post']['reddit-preview']);
 }
 
 add_action('add_meta_boxes', 'trf_preview');
@@ -518,6 +534,7 @@ add_action('edit_form_after_title', 'trf_add_preview');
 add_action('wp_head', 'trf_head', 1);
 add_action('save_post','trf_save_facebook_custom');
 add_action('save_post','trf_save_twitter_custom');
+add_action('save_post','trf_save_reddit_custom');
 
 function trf_save_facebook_custom($post_id) {
   if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -545,6 +562,17 @@ function trf_save_twitter_custom($post_id) {
   update_post_meta($post_id, 'trf_twitter_title', $twtitle);
   update_post_meta($post_id, 'trf_twitter_image', $twimage);
   update_post_meta($post_id, 'trf_twitter_description', $twdescription);
+}
+
+function trf_save_reddit_custom($post_id) {
+  if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+  if( !current_user_can( 'edit_post' ) ) return;
+
+  $rdtitle = trim($_POST['rdtitle']);
+  $rdimage = trim($_POST['rdimage']);
+
+  update_post_meta($post_id, 'trf_reddit_title', $rdtitle);
+  update_post_meta($post_id, 'trf_reddit_image', $rdimage);
 }
 
 function trf_head() {
@@ -600,4 +628,24 @@ function trf_head() {
   echo '<meta name="twitter:title" content="' . $postTitle . '">' . "\n";
   echo '<meta name="twitter:description" content="' . $postDescription . '">' . "\n";
   echo '<meta name="twitter:image" content="' . $postImage . '">' . "\n";
+
+
+  $postTitle = get_post_meta($postId, "trf_reddit_title", true);
+  if ( empty($postTitle) ) $postTitle = $post->post_title;
+  $postImage = get_post_meta($postId, "trf_reddit_image", true);
+  if ( empty($postImage) ) {
+    $feat_image = wp_get_attachment_url( get_post_thumbnail_id($postId) );
+    if ( empty($feat_image) ) {
+      $match = array();
+      preg_match( "/<img.+src=[\'\"](?P<src>.+?)[\'\"].*>/i", $post->post_content, $match );
+      if ( sizeof($match) > 0 ) {
+        $postImage = $match["src"];
+      }
+    }
+    else {
+      $postImage = $feat_image;
+    }
+  }
+  echo '<meta name="image" content="' . $postImage . '">' . "\n";
+  echo '<meta name="title" content="' . $postTitle . '">' . "\n";
 }
