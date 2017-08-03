@@ -68,8 +68,8 @@ class Trf_Promote extends WP_List_Table {
             'keyword1'      => 'Keyword1',
             'keyword2'      => 'Keyword2',
             'keyword3'      => 'Keyword3',
-            'traffic_on'    => 'Get Traffic',
-            'action'        => 'Action'
+            'action'        => 'Action',
+            'traffic_on'    => 'Get Traffic'
         );
     }
 

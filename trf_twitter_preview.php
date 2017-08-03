@@ -109,6 +109,9 @@
           background-position: center;
         }
         .hrtw .hrtw-content-wrapper .hrtw-link-box .hrtw-prev-content {
+          padding: 10px 10px 10px 10px;
+        }
+        .hrtw .hrtw-content-wrapper .hrtw-link-box .hrtw-box-image + .hrtw-prev-content {
           padding: 10px 10px 10px 135px;
         }
         .hrtw .hrtw-content-wrapper .hrtw-link-box .hrtw-prev-content .hrtw-box-title {
