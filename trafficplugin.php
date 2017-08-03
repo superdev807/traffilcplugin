@@ -283,7 +283,9 @@ function save_or_update_meta($post_id, $post_key, $meta_key) {
 }
 
 function createFacebookPost($post_id) {
-  $title  = get_the_title($post_id);
+  $title = get_post_meta($postId, "trf_facebook_title", true);
+  if ( empty($title) ) $title  = get_the_title($post_id);
+
   $link   = get_permalink($post_id);
 
   $fbpageid             = get_post_meta(111111113, 'trfFbPage', true);
@@ -295,9 +297,10 @@ function createFacebookPost($post_id) {
 }
 
 function createTweet($post_id, $keyword1, $keyword2, $keyword3) {
-  $title  = get_the_title($post_id);
-  $link   = get_permalink($post_id);
+  $title = get_post_meta($postId, "trf_twitter_title", true);
+  if ( empty($title) ) $title  = get_the_title($post_id);
 
+  $link   = get_permalink($post_id);
   $tweet  = html_entity_decode($title);
   $tweet  = $tweet . " " . implode(array('#'.$keyword1, '#'.$keyword2, '#'.$keyword3), ' ');
 
@@ -467,4 +470,134 @@ function trfSearchTweets($keyword) {
   }
 
   return $response["search_metadata"];
+}
+
+// Metas and Previewer
+function trf_facebook_preview() {
+  include( "trf_facebook_preview.php" );
+}
+function trf_twitter_preview() {
+  include( "trf_twitter_preview.php" );
+}
+
+function trf_preview( $post_type ) {
+  if ( in_array( $post_type, array( 'post', 'page', 'product' ) ) ) {
+    global $post;
+
+    if (($post->post_type == 'post' ||  $post->post_type == 'page' ||  $post->post_type == 'product') && $post->post_status == 'publish') {
+      add_meta_box(
+        'twitter_preview_meta',
+        'TrafficPlugin - Twitter Preview',
+        'trf_twitter_preview',
+        $post_type,
+        'advanced', // change to something other then normal, advanced or side
+        'high'
+      );
+      add_meta_box(
+        'facebook_preview_meta',
+        'TrafficPlugin - Facebook Preview',
+        'trf_facebook_preview',
+        $post_type,
+        'advanced', // change to something other then normal, advanced or side
+        'high'
+      );
+    }
+  }
+}
+
+function trf_add_preview() {
+  global $post, $wp_meta_boxes;
+  do_meta_boxes( get_current_screen(), 'facebook-preview', $post );
+  do_meta_boxes( get_current_screen(), 'twitter-preview', $post );
+  unset($wp_meta_boxes['post']['facebook-preview']);
+  unset($wp_meta_boxes['post']['twitter-preview']);
+}
+
+add_action('add_meta_boxes', 'trf_preview');
+add_action('edit_form_after_title', 'trf_add_preview');
+add_action('wp_head', 'trf_head', 1);
+add_action('save_post','trf_save_facebook_custom');
+add_action('save_post','trf_save_twitter_custom');
+
+function trf_save_facebook_custom($post_id) {
+  if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+  if( !current_user_can( 'edit_post' ) ) return;
+
+  $fbtitle = trim($_POST['fbtitle']);
+  $fbimage = trim($_POST['fbimage']);
+  $fbdescription = $_POST['fbdescription'];
+  $fbmessage = $_POST['fbmessage'];
+
+  update_post_meta($post_id, 'trf_facebook_title', $fbtitle );
+  update_post_meta($post_id, 'trf_facebook_image', $fbimage );
+  update_post_meta($post_id, 'trf_facebook_description', $fbdescription);
+  update_post_meta($post_id, 'trf_facebook_message', $fbmessage);
+}
+
+function trf_save_twitter_custom($post_id) {
+  if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+  if( !current_user_can( 'edit_post' ) ) return;
+
+  $twtitle = trim($_POST['twtitle']);
+  $twdescription = trim($_POST['twdescription']);
+  $twimage = trim($_POST['twimage']);
+
+  update_post_meta($post_id, 'trf_twitter_title', $twtitle);
+  update_post_meta($post_id, 'trf_twitter_image', $twimage);
+  update_post_meta($post_id, 'trf_twitter_description', $twdescription);
+}
+
+function trf_head() {
+  global $post;
+  $postId = $post->ID;
+
+  $postTitle = get_post_meta($postId, "trf_facebook_title", true);
+  if ( empty($postTitle) ) $postTitle = $post->post_title;
+  $postDescription =  get_post_meta($postId, "trf_facebook_description", true);
+  if ( empty($postDescription) ) {}
+
+  $postImage = get_post_meta($postId, "trf_facebook_image", true);
+  if ( empty($postImage) ) {
+    $feat_image = wp_get_attachment_url( get_post_thumbnail_id($postId) );
+    if ( empty($feat_image) ) {
+      $match = array();
+      preg_match( "/<img.+src=[\'\"](?P<src>.+?)[\'\"].*>/i", $post->post_content, $match );
+      if ( sizeof($match) > 0 ) {
+        $postImage = $match["src"];
+      }
+    }
+    else {
+      $postImage = $feat_image;
+    }
+  }
+
+  echo '<meta property="og:title" content="'.$postTitle.'">' . "\n";
+  echo '<meta property="og:description" content="'.$postDescription.'">' . "\n";
+  echo '<meta property="og:url" content="'.get_the_permalink($postId).'">' . "\n";
+  echo '<meta property="og:image" content="'.$postImage.'">' . "\n";
+
+  $postTitle = get_post_meta($postId, "trf_twitter_title", true);
+  if ( empty($postTitle) ) $postTitle = $post->post_title;
+  $postDescription =  get_post_meta($postId, "trf_twitter_description", true);
+  if ( empty($postDescription) ) {}
+
+  $postImage = get_post_meta($postId, "trf_twitter_image", true);
+  if ( empty($postImage) ) {
+    $feat_image = wp_get_attachment_url( get_post_thumbnail_id($postId) );
+    if ( empty($feat_image) ) {
+      $match = array();
+      preg_match( "/<img.+src=[\'\"](?P<src>.+?)[\'\"].*>/i", $post->post_content, $match );
+      if ( sizeof($match) > 0 ) {
+        $postImage = $match["src"];
+      }
+    }
+    else {
+      $postImage = $feat_image;
+    }
+  }
+
+  echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+  echo '<meta name="twitter:title" content="' . $postTitle . '">' . "\n";
+  echo '<meta name="twitter:description" content="' . $postDescription . '">' . "\n";
+  echo '<meta name="twitter:image" content="' . $postImage . '">' . "\n";
 }

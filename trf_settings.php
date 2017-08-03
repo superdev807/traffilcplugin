@@ -127,8 +127,6 @@ function trf_settings() {
         $subreddits = wptrfMySubreddits();
 
         if (isset($subreddits)) {
-            echo $selected_reddit_subpage;
-
             echo '<tr class="table-gap"><td>Select Reddit Page</td><td><select name = "selected_reddit_subpage"><option></option>';
 
             foreach ($subreddits as $page) {
