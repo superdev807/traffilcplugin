@@ -200,10 +200,11 @@ function trf_promote() {
                 }
             })
             .done(function(msg) {
-                alert(msg);
             }).always(function() {
                 self.removeAttr("disabled");
             });
+            evt.preventDefault();
+            return false;
         });
     });
     </script>';
