@@ -16,18 +16,13 @@
       if (!current_user_can($post_type->cap->edit_post, $post_id))
         return $post_id;
 
-      if ($_POST['keyword'] === 'true') {
-        save_or_update_meta($post_id, 'keyword1', 'trf_keyword1');
-        save_or_update_meta($post_id, 'keyword2', 'trf_keyword2');
-        save_or_update_meta($post_id, 'keyword3', 'trf_keyword3');
-      } else {
-        save_or_update_meta($post_id, 'get_traffic', 'trf_get_traffic');
-      }
+      save_or_update_meta($post_id, 'keyword1', 'trf_keyword1');
+      save_or_update_meta($post_id, 'keyword2', 'trf_keyword2');
+      save_or_update_meta($post_id, 'keyword3', 'trf_keyword3');
+      save_or_update_meta($post_id, 'get_traffic', 'trf_get_traffic');
     }
 
     // -----------------------------
-
-    if ($_POST['keyword'] === 'true') return;
 
     $get_traffic  = get_post_meta($id, 'trf_get_traffic', true);
 

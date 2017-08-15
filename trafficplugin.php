@@ -3,7 +3,7 @@
 Plugin Name:  WP Traffic Plugin
 Plugin URI: http://wp-traffic-plugin.com
 Description: Traffic Plugin
-Version: 0.9.1
+Version: 0.9.2
 Author: Dan Green
 */
 

@@ -5,3 +5,8 @@ tr.table-gap td {
 table.promotes td input[type='text'] {
     width: 100%;
 }
+
+table.promotes tr.pending {
+    background-color: #ffe0e0;
+    pointer-events: none;
+}

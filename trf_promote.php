@@ -196,13 +196,36 @@ function trf_promote() {
                     keyword1: parent.find("[name=keyword1]").val(),
                     keyword2: parent.find("[name=keyword2]").val(),
                     keyword3: parent.find("[name=keyword3]").val(),
-                    get_traffic: parent.find("[name=trf-get-traffic]").is(":checked") ? "1" : ""
+                    keyword: "true"
                 }
             })
             .done(function(msg) {
             }).always(function() {
                 self.removeAttr("disabled");
             });
+            evt.preventDefault();
+            return false;
+        });
+
+        jQuery(".trf-get-traffic").change(function(evt) {
+            var self = $(evt.currentTarget);
+            var parent = $(self.closest("tr"));
+            parent.addClass("pending");
+            var btn = parent.find(".trf-save");
+
+            request = $.ajax({
+                type: "post",
+                url: "' . $save_url . '",
+                data: {
+                    id: btn.data("id"),
+                    trf_traffic_nonce: btn.data("nonce"),
+                    get_traffic: parent.find("[name=trf-get-traffic]").is(":checked") ? "1" : ""
+                }
+            })
+            .done(function(msg) {}).always(function() {
+                parent.removeClass("pending");
+            });
+
             evt.preventDefault();
             return false;
         });
