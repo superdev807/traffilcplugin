@@ -200,6 +200,7 @@ function trf_promote() {
                 }
             })
             .done(function(msg) {
+                toastr.success("Saved.")
             }).always(function() {
                 self.removeAttr("disabled");
             });
@@ -222,7 +223,9 @@ function trf_promote() {
                     get_traffic: parent.find("[name=trf-get-traffic]").is(":checked") ? "1" : ""
                 }
             })
-            .done(function(msg) {}).always(function() {
+            .done(function(msg) {
+                if(msg) toastr.success(msg);
+            }).always(function() {
                 parent.removeClass("pending");
             });
 

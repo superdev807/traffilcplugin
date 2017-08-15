@@ -121,7 +121,12 @@ class Trf_Log extends WP_List_Table {
             if ($r->source == 'facebook') {
                 if ($jsonres['id']) {
                     $newrecord['error'] = '';
-                    $newrecord['link'] = 'https://www.facebook.com/' . $jsonres['fb_status_id'];
+                    if ($jsonres['fb_status_id']) {
+                        $newrecord['link'] = 'https://www.facebook.com/' . $jsonres['fb_status_id'];
+                    }
+                    else {
+                        $newrecord['link'] = 'https://www.facebook.com/' . $jsonres['id'];
+                    }
                 } else {
                     $newrecord['error'] = $jsonres['error']['message'];
                     $newrecord['link'] = '';

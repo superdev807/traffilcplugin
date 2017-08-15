@@ -43,7 +43,7 @@
       trfProcesskeyword($keyword3);
 
       if (pagesWithTalkingAbout($keyword1, $keyword2, $keyword3) < 150) {
-        echo 'Keywords for facebook are too specific';
+        echo "Keywords for facebook are too specific.<br />\n";
       }
       else {
         trfSearchTweets($keyword1);
@@ -51,22 +51,22 @@
         trfSearchTweets($keyword3);
 
         if (tweetsCount($keyword1, $keyword2, $keyword3) < 200) {
-          echo 'Keywords for twitter are too specific';
+          echo "Keywords for twitter are too specific.<br />\n";
         }
         else {
           createFacebookPost($id);
-          echo "Created Facebook Post\n";
+          echo "Created Facebook Post.<br />\n";
 
           if (createTweet($id, $keyword1, $keyword2, $keyword3)) {
-            echo "Created a Tweet\n";
+            echo "Created a Tweet.<br />\n";
           } else {
-            echo "Error occured while tweeting\n";
+            echo "Error occured while tweeting.<br />\n";
           }
 
           if (createRedditPost($id)) {
-            echo "Created a link to Sub Reddit\n";
+            echo "Created a link to Sub Reddit.<br />\n";
           } else {
-            echo "Error occured while creating reddit post\n";
+            echo "Error occured while creating reddit post.<br />\n";
           }
         }
       }

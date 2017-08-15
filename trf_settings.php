@@ -160,5 +160,23 @@ function trf_settings() {
         </form>
     <hr />';
 
+    $cron = plugin_dir_url( __FILE__ ) . 'auto.php';
+    $cron2 = plugin_dir_url( __FILE__ ) . 'auto2.php';
+
+    echo '<h2>Cron Info</h2>';
+    echo "<table>
+        <tr><td>Once Per Day Cron for URL Commenting: </td><td colspan = '2'>wget -O /dev/null " . $cron . "</td></tr>
+        <tr><td>Once Per Day Cron for URL Following: </td><td colspan = '2'>wget -O /dev/null " . $cron2 . "</td></tr>
+        <tr></tr>
+    </table>";
+
+    echo '<h3>Alternative Cron Commands (Try these if the above dont work on your webhost) </h3>';
+
+    echo "<table>
+        <tr><td>Once Per Day Cron URL for Commenting: </td><td colspan = '2'>lynx -dump /dev/null " . $cron . "</td></tr>
+        <tr><td>Once Per Day Cron URL for Following: </td><td colspan = '2'>lynx -dump /dev/null " . $cron2 . "</td></tr>
+        <tr></tr>
+    </table>";
+
     echo "</div>";
 }

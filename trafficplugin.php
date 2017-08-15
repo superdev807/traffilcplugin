@@ -3,7 +3,7 @@
 Plugin Name:  WP Traffic Plugin
 Plugin URI: http://wp-traffic-plugin.com
 Description: Traffic Plugin
-Version: 0.9.2
+Version: 0.9.3
 Author: Dan Green
 */
 
@@ -90,9 +90,11 @@ function trf_support() {
 add_action('admin_enqueue_scripts',  'trf_admin_scripts');
 function trf_admin_scripts() {
     wp_enqueue_style('trf-admin-css', plugins_url( 'admin-style.css', __FILE__ ), false );
+    wp_enqueue_style('trf-toastr-css', plugins_url( 'toastr/toastr.min.css', __FILE__ ), false );
     wp_enqueue_style('togglescss', plugins_url( 'tinytools/tinytools.toggleswitch.min.css', __FILE__ ), false );
     wp_enqueue_script('jquery');
     wp_enqueue_script('toggles',  plugins_url( 'tinytools/tinytools.toggleswitch.min.js', __FILE__ ) , false);
+    wp_enqueue_script('trf-toastr-js',  plugins_url( 'toastr/toastr.min.js', __FILE__ ) , false);
 }
 
 function trf_humanTiming ($time) {
