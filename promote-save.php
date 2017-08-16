@@ -33,38 +33,46 @@
 
     if ($get_traffic != '1') return;
 
+    $facebookReady = !empty(get_post_meta(111111113, 'trfFbAccessToken', TRUE));
+    $twitterReady  = !empty(get_post_meta(111111113, 'trfTwTokenSecret', TRUE));
+    $redditReady   = !empty(get_post_meta(111111113, 'trfRdRefreshToken', TRUE));
+
     $keyword1     = get_post_meta($id, 'trf_keyword1', true);
     $keyword2     = get_post_meta($id, 'trf_keyword2', true);
     $keyword3     = get_post_meta($id, 'trf_keyword3', true);
 
     if ($get_traffic == 1) {
-      trfProcesskeyword($keyword1);
-      trfProcesskeyword($keyword2);
-      trfProcesskeyword($keyword3);
+      if ($facebookReady) {
+        trfProcesskeyword($keyword1);
+        trfProcesskeyword($keyword2);
+        trfProcesskeyword($keyword3);
+      }
 
       if (pagesWithTalkingAbout($keyword1, $keyword2, $keyword3) < 150) {
         echo "Your keywords are too specific to generate traffic from Facebook, please try using more general keywords.<br/>\n";
-       }
+      }
       else {
-        trfSearchTweets($keyword1);
-        trfSearchTweets($keyword2);
-        trfSearchTweets($keyword3);
+        if ($twitterReady) {
+          trfSearchTweets($keyword1);
+          trfSearchTweets($keyword2);
+          trfSearchTweets($keyword3);
+        }
 
         if (tweetsCount($keyword1, $keyword2, $keyword3) < 200) {
           echo "Your keywords are too specific to generate traffic from Twitter, please try using more general keywords.<br/>\n";
         }
         else {
-          createFacebookPost($id);
-          echo "Created your Facebook post and getting Facebook traffic for you now!<br />\n";
-
-          if (createTweet($id, $keyword1, $keyword2, $keyword3)) {
-            echo "Created your Twitter post and getting Twitter traffic for you now!<br />\n";
-          } else {
+          if ($facebookReady) {
+            createFacebookPost($id);
+            echo "Created your Facebook post and getting Facebook traffic for you now!<br />\n";
           }
 
-          if (createRedditPost($id)) {
+          if ($twitterReady && createTweet($id, $keyword1, $keyword2, $keyword3)) {
+            echo "Created your Twitter post and getting Twitter traffic for you now!<br />\n";
+          }
+
+          if ($redditReady && createRedditPost($id)) {
             echo "Created your Reddit post and getting Reddit traffic for you now!<br />\n";
-          } else {
           }
         }
       }

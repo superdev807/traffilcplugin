@@ -38,15 +38,17 @@ class Trf_Log extends WP_List_Table {
         return $columns= array(
             'cb' => '<input type="checkbox" />',
             'action'        => 'Action',
+            'title'         => 'title',
             'link'          => 'Link',
             'time'          => 'Time',
-            'error'          => 'Error',
+            'error'         => 'Error',
         );
     }
 
     function get_sortable_columns() {
         $sortable_columns = array(
             'action'        => array('action', false),
+            'title'         => array('title', false),
             'link'          => array('link', false),
             'time'          => array('time', false),
             'error'         => array('error', false),
@@ -113,12 +115,13 @@ class Trf_Log extends WP_List_Table {
             $newrecord = array(
                 'id' => $r->id,
                 'post_id' => $r->post_id,
+                'title' => $r->title,
                 "action" => $r->source,
                 "time" => date('Y-m-d H:i', $r->created),
             );
 
             $jsonres = json_decode($r->raw_result, true);
-            if ($r->source == 'facebook') {
+            if ($r->source == 'facebook' || $r->source == 'facebook_comment') {
                 if ($jsonres['id']) {
                     $newrecord['error'] = '';
                     if ($jsonres['fb_status_id']) {

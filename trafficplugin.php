@@ -3,7 +3,7 @@
 Plugin Name:  WP Traffic Plugin
 Plugin URI: http://wp-traffic-plugin.com
 Description: Traffic Plugin
-Version: 0.9.4
+Version: 0.9.5
 Author: Dan Green
 */
 
@@ -609,7 +609,9 @@ function trf_head() {
   $postTitle = get_post_meta($postId, "trf_twitter_title", true);
   if ( empty($postTitle) ) $postTitle = $post->post_title;
   $postDescription =  get_post_meta($postId, "trf_twitter_description", true);
-  if ( empty($postDescription) ) {}
+  if ( empty($postDescription) ) {
+    $postDescription = substr(strip_tags($post->post_content), 0, 100) . "...";
+  }
 
   $postImage = get_post_meta($postId, "trf_twitter_image", true);
   if ( empty($postImage) ) {
@@ -626,10 +628,10 @@ function trf_head() {
     }
   }
 
-  echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
-  echo '<meta name="twitter:title" content="' . $postTitle . '">' . "\n";
-  echo '<meta name="twitter:description" content="' . $postDescription . '">' . "\n";
-  echo '<meta name="twitter:image" content="' . $postImage . '">' . "\n";
+  echo '<meta property="twitter:card" content="summary">' . "\n";
+  echo '<meta property="twitter:title" content="' . $postTitle . '">' . "\n";
+  echo '<meta property="twitter:description" content="' . $postDescription . '">' . "\n";
+  echo '<meta property="twitter:image" content="' . $postImage . '">' . "\n";
 
 
   $postTitle = get_post_meta($postId, "trf_reddit_title", true);
@@ -648,6 +650,6 @@ function trf_head() {
       $postImage = $feat_image;
     }
   }
-  echo '<meta name="image" content="' . $postImage . '">' . "\n";
-  echo '<meta name="title" content="' . $postTitle . '">' . "\n";
+  echo '<meta property="image" content="' . $postImage . '">' . "\n";
+  echo '<meta property="title" content="' . $postTitle . '">' . "\n";
 }

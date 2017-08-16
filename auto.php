@@ -55,7 +55,13 @@ function trfGetRecentPost($fb_page) {
 function trfDoComment($post_id, $fb_post) {
     $data['message'] = trfGetRandomProcessedComment($post_id);
     $return = wptrfFacebookPost($fb_post . '/comments', $data);
-    trfInsertCommentHistory($post_id, $fb_post);
+
+    if ($return->error) {
+        trfInsertHistory('facebook_comment', json_encode($return), $link, $title, $post_id);
+    }
+    else {
+        trfInsertCommentHistory($post_id, $fb_post);
+    }
 }
 
 function trfGetRandomProcessedComment($post_id) {
