@@ -48,16 +48,21 @@ function trfSelectPagesFromTop150($post_id) {
 
 function trfGetRecentPost($fb_page) {
     $return = wptrfFacebookQuery($fb_page . '/feed', '&limit=1');
-
     return $return['data'][0]['id'];
 }
 
 function trfDoComment($post_id, $fb_post) {
     $data['message'] = trfGetRandomProcessedComment($post_id);
-    $return = wptrfFacebookPost($fb_post . '/comments', $data);
+
+    $fbpage = get_post_meta(111111113, 'trfFbPage', TRUE);
+    $pageAccessToken = get_post_meta(111111113, 'trfFbPageAccessToken', TRUE);
+
+    if (empty($pageAccessToken)) $pageAccessToken = trfGetPageAccessToken($fbpage);
+
+    $return = wptrfFacebookPost($fb_post . '/comments', $data, $pageAccessToken);
 
     if ($return->error) {
-        trfInsertHistory('facebook_comment', json_encode($return), $link, $title, $post_id);
+        trfInsertHistory('facebook_comment_error', json_encode($return), $link, $title, $post_id);
     }
     else {
         trfInsertCommentHistory($post_id, $fb_post);
@@ -182,6 +187,24 @@ function trfSelectPostId() {
         array('%s', '%d'));
 
     return $chosenId;
+}
+
+function trfGetPageAccessToken($pageid) {
+    $response = wptrfFacebookQuery('me/accounts', '');
+
+    foreach ($response ['data'] as $page){
+        $pagename = $page['name'];
+        $id = $page['id'];
+        $id = trim($id);
+
+        $token = $page['access_token'];
+
+        if ($id == $pageid){
+            $accesstoken = $token;
+        }
+    }
+
+    return $accesstoken;
 }
 
 class trfSpintax {

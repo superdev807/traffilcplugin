@@ -121,7 +121,7 @@ class Trf_Log extends WP_List_Table {
             );
 
             $jsonres = json_decode($r->raw_result, true);
-            if ($r->source == 'facebook' || $r->source == 'facebook_comment') {
+            if ($r->source == 'facebook' || $r->source == 'facebook_comment_error') {
                 if ($jsonres['id']) {
                     $newrecord['error'] = '';
                     if ($jsonres['fb_status_id']) {

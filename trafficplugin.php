@@ -3,7 +3,7 @@
 Plugin Name:  WP Traffic Plugin
 Plugin URI: http://wp-traffic-plugin.com
 Description: Traffic Plugin
-Version: 0.9.5
+Version: 0.9.6
 Author: Dan Green
 */
 
@@ -134,9 +134,15 @@ function wptrfFacebookQuery($query, $params) {
     return $result;
 }
 
-function wptrfFacebookPost($query, $params) {
+function wptrfFacebookPost($query, $params, $pagetoken = false) {
     $post_url = 'https://graph.facebook.com/'.$query;
-    $accesstoken = get_post_meta(111111113, 'trfFbAccessToken', TRUE);
+
+    if ($pagetoken) {
+      $accesstoken = $pagetoken;
+    } else {
+      $accesstoken = get_post_meta(111111113, 'trfFbAccessToken', TRUE);
+    }
+
     $params['access_token'] = $accesstoken;
 
     $ch = curl_init();
