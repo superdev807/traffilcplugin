@@ -100,6 +100,10 @@ function trfFollow($post_id) {
 			$res = json_decode($res, true);
 			if ($res['errors']) {
 				echo $res['errors'][0]['message'] . "\n";
+				trfInsertHistory('twitter_like_error', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
+			}
+			else {
+				trfInsertHistory('twitter_like', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
 			}
 
 			if (!empty($list_id)) {
@@ -117,8 +121,12 @@ function trfFollow($post_id) {
 								->performRequest();
 
 				$res = json_decode($res, true);
+
 				if ($res['errors']) {
 					echo $res['errors'][0]['message'] . "\n";
+					trfInsertHistory('twitter_member_error', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
+				} else {
+					trfInsertHistory('twitter_member', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
 				}
 			}
 
@@ -137,6 +145,11 @@ function trfFollow($post_id) {
 			$res = json_decode($res, true);
 			if ($res['errors']) {
 				echo $res['errors'][0]['message'] . "\n";
+				echo 'here dude. are you adding following?';
+				trfInsertHistory('twitter_follow_error', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
+			} else {
+				var_dump($res);
+				trfInsertHistory('twitter_follow', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
 			}
 		} else {
 			echo "skipping because it's already followed";

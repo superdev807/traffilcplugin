@@ -121,7 +121,7 @@ class Trf_Log extends WP_List_Table {
             );
 
             $jsonres = json_decode($r->raw_result, true);
-            if ($r->source == 'facebook' || $r->source == 'facebook_comment_error') {
+            if (strpos($r->source, 'facebook') !== false) {
                 if ($jsonres['id']) {
                     $newrecord['error'] = '';
                     if ($jsonres['fb_status_id']) {
@@ -134,7 +134,7 @@ class Trf_Log extends WP_List_Table {
                     $newrecord['error'] = $jsonres['error']['message'];
                     $newrecord['link'] = '';
                 }
-            } else if ($r->source == 'twitter') {
+            } else if (strpos($r->source, 'twitter') !== false) {
                 if ($jsonres['id_str']) {
                     $newrecord['error'] = '';
                     $newrecord['link'] = "https://www.twitter.com/" . $jsonres["user"]["id_str"] . "/status/" . $jsonres["id_str"];
@@ -142,7 +142,7 @@ class Trf_Log extends WP_List_Table {
                     $newrecord['error'] = implode(', ', array_map('map_message', $jsonres['errors']));
                     $newrecord['link'] = '';
                 }
-            } else if ($r->source == 'reddit') {
+            } else if (strpos($r->source, 'reddit') !== false) {
                 if (count($jsonres['result']['json']['errors']) == 0) {
                     $newrecord['error'] = '';
                     $newrecord['link'] = $jsonres['result']['json']['data']['url'];
