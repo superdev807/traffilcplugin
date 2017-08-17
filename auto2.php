@@ -148,7 +148,7 @@ function trfFollow($post_id) {
 				echo 'here dude. are you adding following?';
 				trfInsertHistory('twitter_follow_error', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
 			} else {
-				var_dump($res);
+				// var_dump($res);
 				trfInsertHistory('twitter_follow', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
 			}
 		} else {
@@ -229,7 +229,11 @@ function trfGetRecentTweets($settings, $keyword1, $keyword2, $keyword3) {
 						 ->performRequest();
 	$response3 = json_decode($response3, TRUE);
 
-	$response = array_merge($response1['statuses'], $response2['statuses'], $response3['statuses']);
+	$response = array_merge(
+		empty($response1['statuses']) ? [] : $response1['statuses'],
+		empty($response2['statuses']) ? [] : $response2['statuses'],
+		empty($response3['statuses']) ? [] : $response2['statuses']
+	);
 	$response = array_slice($response, 0, mt_rand(5, 10));
 
 	// echo "getting recent tweets...";
