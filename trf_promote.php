@@ -112,7 +112,7 @@ class Trf_Promote extends WP_List_Table {
             }
         }
         if (empty($_POST['checker']) || isset($_POST['show_posts'])) {
-            foreach(get_posts() as $p) {
+            foreach(get_posts(array('posts_per_page' => -1, )) as $p) {
                 array_push($data, array(
                     "id" => $p->ID,
                     "title" => $p->post_title,

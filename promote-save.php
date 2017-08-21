@@ -49,7 +49,7 @@
       }
 
       if (pagesWithTalkingAbout($keyword1, $keyword2, $keyword3) < 150) {
-        echo "Your keywords are too specific to generate traffic from Facebook, please try using more general keywords.<br/>\n";
+        echo "Your keywords are too specific to generate traffic from Facebook, please try using more general keywords.<br/><br/>\n";
       }
       else {
         if ($twitterReady) {
@@ -59,20 +59,20 @@
         }
 
         if (tweetsCount($keyword1, $keyword2, $keyword3) < 200) {
-          echo "Your keywords are too specific to generate traffic from Twitter, please try using more general keywords.<br/>\n";
+          echo "Your keywords are too specific to generate traffic from Twitter, please try using more general keywords.<br/><br/>\n";
         }
         else {
           if ($facebookReady) {
             createFacebookPost($id);
-            echo "Created your Facebook post and getting Facebook traffic for you now!<br />\n";
+            echo "Created your Facebook post and getting Facebook traffic for you now!<br/><br/>\n";
           }
 
           if ($twitterReady && createTweet($id, $keyword1, $keyword2, $keyword3)) {
-            echo "Created your Twitter post and getting Twitter traffic for you now!<br />\n";
+            echo "Created your Twitter post and getting Twitter traffic for you now!<br/><br/>\n";
           }
 
           if ($redditReady && createRedditPost($id)) {
-            echo "Created your Reddit post and getting Reddit traffic for you now!<br />\n";
+            echo "Created your Reddit post and getting Reddit traffic for you now!<br/><br/>\n";
           }
         }
       }

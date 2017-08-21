@@ -3,12 +3,12 @@
 Plugin Name:  WP Traffic Plugin
 Plugin URI: http://wp-traffic-plugin.com
 Description: Traffic Plugin
-Version: 0.9.7
+Version: 0.9.8
 Author: Dan Green
 */
 
-// error_reporting(E_ALL^E_NOTICE^E_DEPRECATED);
-error_reporting(0);
+error_reporting(E_ALL^E_NOTICE^E_DEPRECATED);
+// error_reporting(0);
 
 session_start();
 
@@ -658,4 +658,22 @@ function trf_head() {
   }
   echo '<meta property="image" content="' . $postImage . '">' . "\n";
   echo '<meta property="title" content="' . $postTitle . '">' . "\n";
+}
+
+function trfGetPageAccessToken($pageid) {
+    $response = wptrfFacebookQuery('me/accounts', '');
+
+    foreach ($response ['data'] as $page){
+        $pagename = $page['name'];
+        $id = $page['id'];
+        $id = trim($id);
+
+        $token = $page['access_token'];
+
+        if ($id == $pageid){
+            $accesstoken = $token;
+        }
+    }
+
+    return $accesstoken;
 }

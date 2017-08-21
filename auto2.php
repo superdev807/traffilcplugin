@@ -100,7 +100,7 @@ function trfFollow($post_id) {
 			$res = json_decode($res, true);
 			if ($res['errors']) {
 				echo $res['errors'][0]['message'] . "\n";
-				trfInsertHistory('twitter_like_error', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
+				// trfInsertHistory('twitter_like_error', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
 			}
 			else {
 				trfInsertHistory('twitter_like', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
@@ -145,7 +145,6 @@ function trfFollow($post_id) {
 			$res = json_decode($res, true);
 			if ($res['errors']) {
 				echo $res['errors'][0]['message'] . "\n";
-				echo 'here dude. are you adding following?';
 				trfInsertHistory('twitter_follow_error', json_encode($res), "https://twitter.com/$name/status/$tweetid", $name, $post_id);
 			} else {
 				// var_dump($res);
@@ -234,7 +233,7 @@ function trfGetRecentTweets($settings, $keyword1, $keyword2, $keyword3) {
 		empty($response2['statuses']) ? [] : $response2['statuses'],
 		empty($response3['statuses']) ? [] : $response2['statuses']
 	);
-	$response = array_slice($response, 0, mt_rand(5, 10));
+	$response = array_slice($response, 0, mt_rand(1, 3));
 
 	// echo "getting recent tweets...";
 	// var_dump($response);

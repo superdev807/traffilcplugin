@@ -37,6 +37,18 @@ function trf_settings() {
 
         update_post_meta('111111113', 'trftimezone', $trftimezone );
 
+        if (!empty($selected_facebook_page)) {
+            $pageAccessToken = trfGetPageAccessToken($selected_facebook_page);
+            if ($pageAccessToken) {
+                update_post_meta('111111113', 'trfFbPageAccessToken', $pageAccessToken);
+            }
+            else {
+                update_post_meta('111111113', 'trfFbPageAccessToken', '');
+            }
+        } else {
+            update_post_meta('111111113', 'trfFbPageAccessToken', '');
+        }
+
         $successmessage = " <strong>Settings Saved</strong>";
     }
 
