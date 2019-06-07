@@ -3,7 +3,7 @@
 Plugin Name:  WP Traffic Plugin
 Plugin URI: http://wp-traffic-plugin.com
 Description: Traffic Plugin
-Version: 0.9.9
+Version: 1.0.0
 Author: Dan Green
 */
 
@@ -119,6 +119,7 @@ function trf_humanTiming ($time) {
 function wptrfFacebookQuery($query, $params) {
     $post_url = 'https://graph.facebook.com/'.$query;
     $accesstoken = get_post_meta(111111113, 'trfFbAccessToken', TRUE);
+
     $post_url = $post_url . '?access_token=' . $accesstoken . $params;
 
     $ch = curl_init();
@@ -140,7 +141,7 @@ function wptrfFacebookPost($query, $params, $pagetoken = false) {
     if ($pagetoken) {
       $accesstoken = $pagetoken;
     } else {
-      $accesstoken = get_post_meta(111111113, 'trfFbAccessToken', TRUE);
+      $accesstoken = get_post_meta(111111113, 'trfFbPageAccessToken', TRUE);
     }
 
     $params['access_token'] = $accesstoken;
